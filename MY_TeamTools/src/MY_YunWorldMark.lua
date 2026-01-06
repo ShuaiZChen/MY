@@ -210,6 +210,25 @@ function D.OpenPanel()
 		y = 90,
 		w = 720,
 		h = 390,
+		onRowHover = function(bIn, rec, nIndex, rect)
+			if not bIn then
+				HideTip()
+				return
+			end
+			local a = {
+				_L['Key'] .. ': ' .. tostring(rec and rec.key or ''),
+				_L['ID'] .. ': ' .. tostring(rec and rec.id or ''),
+				_L['Name'] .. ': ' .. tostring(rec and rec.szName or ''),
+				_L['Author'] .. ': ' .. tostring(rec and rec.szAuthor or ''),
+				_L['Update time'] .. ': ' .. tostring(rec and rec.dwUpdateTime or ''),
+				_L['About'] .. ': ' .. tostring(rec and rec.szAboutURL or ''),
+			}
+			local tipRect = nil
+			if X.IsTable(rect) then
+				tipRect = { rect.x or rect[1], rect.y or rect[2], rect.w or rect[3], rect.h or rect[4] }
+			end
+			X.OutputTip(tipRect, table.concat(a, '\n'), 106, X.UI.TIP_POSITION.RIGHT_LEFT, 450)
+		end,
 		columns = {
 			{
 				key = 'szName',
