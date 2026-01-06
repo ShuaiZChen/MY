@@ -216,6 +216,7 @@ function D.OpenPanel()
 				title = _L['Name'],
 				alignHorizontal = 'left',
 				width = 260,
+				overflow = 'hidden',
 				render = function(value)
 					return GetFormatText(' ' .. X.ReplaceSensitiveWord(tostring(value or '')), 162, 255, 255, 255)
 				end,
