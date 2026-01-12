@@ -281,6 +281,7 @@ return {
 
 	-- MY_YunWorldMark.lua
 	['MY_YunWorldMark'] = '雲世界標記',
+	['Data subscribe'] = '數據訂閱',
 	['World mark'] = '世界標記',
 	['Get current mark data'] = '獲取當前標記數據',
 	['Restore world mark position'] = '恢復世界標記位置',
