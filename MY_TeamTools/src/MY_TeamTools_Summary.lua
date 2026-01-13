@@ -198,7 +198,7 @@ function D.CalculateSort(tInfo)
 			nCount = tInfo[RT_SORT_FIELD]
 		end
 	end
-	if nCount == 0 and not tInfo.bIsOnLine then
+	if nCount == 0 and not tInfo.bOnline then
 		nCount = -2
 	end
 	return nCount
@@ -269,7 +269,7 @@ function D.UpdateList(page)
 			end
 			local hBuff = h:Lookup('Box_Buff')
 			local hBox = h:Lookup('Box_Grandpa')
-			if not v.bIsOnLine then
+			if not v.bOnline then
 				h.hHandle_Equip.Pool:Clear()
 				h:Lookup('Text_Toofar1'):Show()
 				h:Lookup('Text_Toofar1'):SetText(g_tStrings.STR_GUILD_OFFLINE)
@@ -279,7 +279,7 @@ function D.UpdateList(page)
 				h:Lookup('Text_Toofar1'):Show()
 				if MY_TeamTools.szStatRange == 'ROOM' then
 					h:Lookup('Text_Toofar1'):SetText('-')
-				elseif v.bIsOnLine then
+				elseif v.bOnline then
 					h:Lookup('Text_Toofar1'):SetText(_L['Too far'])
 				end
 				hBuff:Hide()
@@ -476,7 +476,7 @@ function D.UpdateList(page)
 			else
 				if MY_TeamTools.szStatRange == 'ROOM' then
 					hScore:SetText('-')
-				elseif v.bIsOnLine then
+				elseif v.bOnline then
 					hScore:SetText(_L['Loading'])
 				else
 					hScore:SetText(g_tStrings.STR_GUILD_OFFLINE)
@@ -841,11 +841,11 @@ function D.GetTeamData(page)
 			nCopyID           = nil, -- 秘境ID
 			tBossKill         = {}, -- 秘境进度
 			nFightState       = KPlayer and KPlayer.bFightState and 1 or 0, -- 战斗状态
-			bIsOnLine         = true,
+			bOnline           = true,
 			bGrandpa          = false, -- 大爷
 		}
 		if tMember.bOnline ~= nil then
-			tInfo.bIsOnLine = tMember.bOnline
+			tInfo.bOnline = tMember.bOnline
 		end
 		if KPlayer then
 			-- 小吃和buff
@@ -868,7 +868,7 @@ function D.GetTeamData(page)
 		end
 		-- 秘境进度
 		if MY_TeamTools.szStatRange == 'RAID' then
-			if tInfo.bIsOnLine and bCDProgressMap then
+			if tInfo.bOnline and bCDProgressMap then
 				for i, boss in ipairs(aProgressMapBoss) do
 					tInfo.tBossKill[i] = GetDungeonRoleProgress(RT_MAP_ID, tMember.dwID, boss.dwProgressID)
 				end
@@ -897,8 +897,8 @@ function D.ApplyTeamEquip(page)
 		local team = GetClientTeam()
 		for _, tMember in ipairs(D.GetMemberList()) do
 			if tMember.dwID ~= X.GetClientPlayerID() then
-				local info = team.GetMemberInfo(tMember.dwID)
-				if info.bIsOnLine then
+				local info = X.GetTeamMemberInfo(tMember.dwID)
+				if info.bOnline then
 					D.ApplyRemotePlayerView(page, tMember.dwID, tMember.dwServerID, tMember.szGlobalID)
 				end
 			end
@@ -907,12 +907,12 @@ function D.ApplyTeamEquip(page)
 end
 
 -- 获取团队成员列表
-function D.GetMemberList(bIsOnLine)
+function D.GetMemberList(bOnline)
 	local aList = {}
 	if MY_TeamTools.szStatRange == 'RAID' then
 		for _, dwID in ipairs(X.GetTeamMemberList()) do
 			local tMember = X.GetTeamMemberInfo(dwID)
-			if tMember and (not bIsOnLine or tMember.bOnline) then
+			if tMember and (not bOnline or tMember.bOnline) then
 				table.insert(aList, {
 					dwID = tMember.dwID,
 					szGlobalID = tMember.szGlobalID,

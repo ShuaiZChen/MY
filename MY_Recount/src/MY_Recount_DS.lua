@@ -1724,9 +1724,9 @@ X.RegisterEvent('MY_RECOUNT_NEW_FIGHT', function() -- ¿ªÕ½É¨Ãè¶ÓÓÑ ¼ÇÂ¼¿ªÕ½¾ÍËÀµ
 	local me = X.GetClientPlayer()
 	if team and me and (me.IsInParty() or me.IsInRaid()) then
 		for _, dwID in ipairs(team.GetTeamMemberList()) do
-			local info = team.GetMemberInfo(dwID)
+			local info = X.GetTeamMemberInfo(dwID)
 			if info then
-				if not info.bIsOnLine then
+				if not info.bOnline then
 					D.OnTeammateStateChange(dwID, true, AWAYTIME_TYPE.OFFLINE, true)
 				elseif info.bDeathFlag then
 					D.OnTeammateStateChange(dwID, true, AWAYTIME_TYPE.DEATH, true)

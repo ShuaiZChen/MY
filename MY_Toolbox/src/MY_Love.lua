@@ -932,8 +932,8 @@ function D.RequestBackupLover()
 	local lover = X.Clone(D.lover)
 	if lover.nLoverType == 1 then -- Ë«Ïò
 		local kTarget = D.GetNearbyPlayerByXID(lover.xID)
-		local info = kTarget and GetClientTeam().GetMemberInfo(kTarget.dwID)
-		if not info or not info.bIsOnLine then
+		local info = kTarget and X.GetTeamMemberInfo(kTarget.dwID)
+		if not info or not info.bOnline then
 			X.OutputSystemAnnounceMessage(_L['Lover must in your team and online to do backup.'])
 		else
 			X.SendBgMsg(lover.szName, 'MY_LOVE', {'BACKUP'})

@@ -223,12 +223,12 @@ X.RegisterEvent('LOADING_ENDING', function()
 end)
 
 -- 获取成员列表
-function D.GetMemberList(bIsOnLine)
+function D.GetMemberList(bOnline)
 	local aList = {}
 	if MY_TeamTools.szStatRange == 'RAID' then
 		for _, dwID in ipairs(X.GetTeamMemberList()) do
 			local tMember = X.GetTeamMemberInfo(dwID)
-			if tMember and (not bIsOnLine or tMember.bOnline) then
+			if tMember and (not bOnline or tMember.bOnline) then
 				table.insert(aList, {
 					dwID = tMember.dwID,
 					szGlobalID = tMember.szGlobalID,

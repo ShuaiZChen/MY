@@ -797,10 +797,10 @@ X.RegisterEvent('MY_RECOUNT_NEW_FIGHT', function() -- ¿ªÕ½É¨Ãè¶ÓÓÑ ¼ÇÂ¼¿ªÕ½¾ÍËÀµ
 		return
 	end
 	for _, dwID in ipairs(team.GetTeamMemberList()) do
-		local info = team.GetMemberInfo(dwID)
+		local info = X.GetTeamMemberInfo(dwID)
 		if info and D.WillRecID(dwID) then
 			D.OnTargetUpdate(dwID)
-			if not info.bIsOnLine then
+			if not info.bOnline then
 				D.InsertLog(LOG_TYPE.PARTY_SET_MEMBER_ONLINE_FLAG, { team.dwTeamID, dwID, 0 })
 			elseif info.bDeathFlag then
 				D.InsertLog(LOG_TYPE.SYS_MSG_UI_OME_DEATH_NOTIFY, { dwID, nil })

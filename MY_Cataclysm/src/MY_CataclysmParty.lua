@@ -181,7 +181,7 @@ end
 
 local function OpenRaidDragPanel(dwMemberID)
 	local hTeam = GetClientTeam()
-	local tMemberInfo = hTeam.GetMemberInfo(dwMemberID)
+	local tMemberInfo = X.GetTeamMemberInfo(dwMemberID)
 	if not tMemberInfo then
 		return
 	end
@@ -202,7 +202,7 @@ local function OpenRaidDragPanel(dwMemberID)
 
 	local hImageLife = hMember:Lookup('Image_Health')
 	local hImageMana = hMember:Lookup('Image_Mana')
-	if tMemberInfo.bIsOnLine then
+	if tMemberInfo.bOnline then
 		local fCurrentLife, fMaxLife = X.GetCharacterLife(tMemberInfo)
 		if fMaxLife > 0 then
 			hImageLife:SetPercentage(fCurrentLife / fMaxLife)
@@ -330,7 +330,7 @@ end
 function D.SetTargetTeammate(dwID, info)
 	if X.IsInPubgMap() and X.GetClientPlayer().nMoveState == MOVE_STATE.ON_DEATH then
 		BattleField_MatchPlayer(dwID)
-	elseif info.bIsOnLine and CanTarget(dwID) then -- 有待考证
+	elseif info.bOnline and CanTarget(dwID) then -- 有待考证
 		if CFG.bTempTargetEnable then
 			X.DelayCall('MY_Cataclysm_TempTarget', false)
 			CTM_TEMP_TARGET_TYPE, CTM_TEMP_TARGET_ID = nil
@@ -436,7 +436,7 @@ function MY_CataclysmParty_Base.OnItemMouseEnter()
 	OnItemRefreshTip()
 	local dwID = (this.bBuff and this:GetParent():GetParent().dwID) or (this.bRole and this.dwID)
 	local info = dwID ~= CTM_TEMP_TARGET_ID and CTM:GetMemberInfo(dwID) or nil
-	if info and info.bIsOnLine and CanTarget(dwID) and CFG.bTempTargetEnable then
+	if info and info.bOnline and CanTarget(dwID) and CFG.bTempTargetEnable then
 		X.DelayCall('MY_Cataclysm_TempTarget', false)
 		local function fnAction()
 			if not CTM_TEMP_TARGET_TYPE then
@@ -534,12 +534,12 @@ function MY_CataclysmParty_Base.OnItemRButtonClick()
 				table.insert(menu, v)
 			end
 		end
-		table.insert(menu, { szOption = g_tStrings.STR_LOOKUP, bDisable = not info.bIsOnLine, fnAction = function()
+		table.insert(menu, { szOption = g_tStrings.STR_LOOKUP, bDisable = not info.bOnline, fnAction = function()
 			X.ViewOtherPlayerByID(dwID)
 		end })
 		if MY_CharInfo and MY_CharInfo.ViewCharInfoToPlayer then
 			table.insert(menu, {
-				szOption = g_tStrings.STR_LOOK .. g_tStrings.STR_EQUIP_ATTR, bDisable = not info.bIsOnLine, fnAction = function()
+				szOption = g_tStrings.STR_LOOK .. g_tStrings.STR_EQUIP_ATTR, bDisable = not info.bOnline, fnAction = function()
 					MY_CharInfo.ViewCharInfoToPlayer(dwID)
 				end
 			})
@@ -1963,7 +1963,7 @@ function CTM:DrawHPMP(h, dwID, info, bRefresh)
 	if CFG.nBGColorMode ~= CTM_BG_COLOR_MODE.BY_DISTANCE then
 		if h.nDistanceLevel then
 			nAlpha = CFG.tDistanceAlpha[h.nDistanceLevel]
-		elseif info.bIsOnLine then
+		elseif info.bOnline then
 			nAlpha = CFG.tOtherAlpha[3]
 		else
 			nAlpha = CFG.tOtherAlpha[2]
@@ -1991,13 +1991,13 @@ function CTM:DrawHPMP(h, dwID, info, bRefresh)
 		end
 		if bSha then
 			local r, g, b = unpack(CFG.tManaColor)
-			if not info.bIsOnLine then
+			if not info.bOnline then
 				r, g, b = unpack(CFG.tOtherCol[2]) -- 不在线就灰色了
 			end
 			self:DrawShadow(Msha, hMana:GetW() * nPercentage, Msha:GetH(), r, g, b, nAlpha, CFG.bManaGradient)
 			Msha:Show()
 		else
-			if info.bIsOnLine then
+			if info.bOnline then
 				Mimg:ToNormal()
 			else
 				Mimg:ToGray()
@@ -2048,7 +2048,7 @@ function CTM:DrawHPMP(h, dwID, info, bRefresh)
 			-- 颜色计算
 			local nNewW = hLife:GetW() * fLifePercentage
 			local r, g, b = unpack(CFG.tOtherCol[2]) -- 不在线就灰色了
-			if info.bIsOnLine then
+			if info.bOnline then
 				if CFG.nBGColorMode == CTM_BG_COLOR_MODE.BY_DISTANCE then
 					if player or X.GetPlayer(dwID) then
 						if h.nDistanceLevel then
@@ -2073,7 +2073,7 @@ function CTM:DrawHPMP(h, dwID, info, bRefresh)
 			Ledg:SetAlpha(nAlpha)
 			Ledg:SetRelX(nRelX)
 			Ledg:SetAbsX(hLife:GetAbsX() + nRelX)
-			if info.bIsOnLine then
+			if info.bOnline then
 				Limg:ToNormal()
 			else
 				Limg:ToGray()
@@ -2091,7 +2091,7 @@ function CTM:DrawHPMP(h, dwID, info, bRefresh)
 		-- 数值绘制
 		local life = h:Lookup('Text_Life')
 		local nFontAlpha = math.min(nAlpha * 0.4 + 255 * 0.6, 255)
-		if not info.bIsOnLine then
+		if not info.bOnline then
 			nFontAlpha = nFontAlpha * 0.8
 		end
 		life:SetAlpha(nAlpha == 0 and 0 or nFontAlpha)
@@ -2099,7 +2099,7 @@ function CTM:DrawHPMP(h, dwID, info, bRefresh)
 		life:SetFontScale(CFG.fLifeFontScale)
 		h:Lookup('Text_Name'):SetAlpha(nFontAlpha)
 
-		if not bDeathFlag and info.bIsOnLine then
+		if not bDeathFlag and info.bOnline then
 			life:SetFontColor(255, 255, 255)
 			if CFG.nHPShownMode2 == 0 then
 				life:SetText('')
@@ -2125,7 +2125,7 @@ function CTM:DrawHPMP(h, dwID, info, bRefresh)
 					end
 				end
 			end
-		elseif not info.bIsOnLine then
+		elseif not info.bOnline then
 			life:SetText('')
 		elseif bDeathFlag then
 			life:SetText('')
@@ -2137,10 +2137,10 @@ function CTM:DrawHPMP(h, dwID, info, bRefresh)
 			-- life:SetText('sync ...')
 		-- end
 		h:Lookup('Text_Death'):SetVisible(bDeathFlag)
-		h:Lookup('Text_OffLine'):SetVisible(not info.bIsOnLine)
+		h:Lookup('Text_OffLine'):SetVisible(not info.bOnline)
 		h:Lookup('Text_Death'):SetFontScale(CFG.fLifeFontScale)
 		h:Lookup('Text_OffLine'):SetFontScale(CFG.fLifeFontScale)
-		h:Lookup('Image_PlayerBg'):SetVisible(info.bIsOnLine)
+		h:Lookup('Image_PlayerBg'):SetVisible(info.bOnline)
 	end
 end
 
@@ -2157,11 +2157,11 @@ function CTM:RefreshSputtering()
 			for _, dwID in pairs(tGroupInfo.MemberList) do
 				local info, nCount = team.GetMemberInfo(dwID), 0
 				local player = X.GetPlayer(dwID)
-				if player and not info.bDeathFlag and info.bIsOnLine then
+				if player and not info.bDeathFlag and info.bOnline then
 					for _, dwID2 in pairs(tGroupInfo.MemberList) do
 						local info2 = team.GetMemberInfo(dwID2)
 						local player2 = X.GetPlayer(dwID2)
-						if player2 and not info2.bDeathFlag and info2.bIsOnLine
+						if player2 and not info2.bDeathFlag and info2.bOnline
 						and X.GetCharacterDistance(player, player2, 'gwwean') <= CFG.nSputteringDistance then
 							nCount = nCount + 1
 						end
@@ -2227,7 +2227,7 @@ function CTM:StartTeamVote(eType)
 	for k, v in pairs(CTM_CACHE) do
 		if v:IsValid() then
 			local info = self:GetMemberInfo(k)
-			local bAwait = info.bIsOnLine
+			local bAwait = info.bOnline
 			if k == X.GetClientPlayerID() then
 				if eType == 'raid_ready' then
 					bAwait = false
