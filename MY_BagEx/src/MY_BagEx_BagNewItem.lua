@@ -129,7 +129,7 @@ function D.OnBagItemUpdate(dwBox, dwX)
 					end
 				end
 			end
-			if dwExcBox and dwExcX and dwExcBox ~= dwBox or dwExcX ~= dwX then
+			if dwExcBox and dwExcX and (dwExcBox ~= dwBox or dwExcX ~= dwX) then
 				EXCHANGE_BOX_TIME[dwExcBox .. ',' .. dwExcX] = GetCurrentTime() + 1 -- 保证一秒内不同时交换两个物品到同一个格子导致失败
 				NEW_ITEM_FLAG_TIME[kItem.dwID] = GetCurrentTime() + 5 -- 五秒内始终认为该物品为新物品
 				--[[#DEBUG BEGIN]]
