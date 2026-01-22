@@ -274,6 +274,25 @@ function PS.OnPanelActive(wnd)
 end
 X.Panel.Register(_L['System'], 'MY_Font', _L['MY_Font'], 'ui/Image/UICommon/CommonPanel7.UITex|36', PS)
 
+-- 兼容历史位置
+do
+	local szSrcDir = X.PACKET_INFO.ROOT .. 'MY_FontResource/font/'
+	local aFontDesc = X.LoadLUAData(szSrcDir .. X.ENVIRONMENT.GAME_LANG .. '.jx3dat')
+	if aFontDesc then
+		local szDstDir = X.FormatPath({'font/', X.PATH_TYPE.GLOBAL})
+		for _, tFont in ipairs(aFontDesc) do
+			if tFont.tLang[X.ENVIRONMENT.GAME_LANG] and tFont.szFile:sub(1, 2) == './' then
+				local szSrcFile = X.NormalizePath(szSrcDir .. tFont.szFile:sub(3))
+				if IsFileExist(szSrcFile) then
+					local szExt = string.match(tFont.szFile, '%.([^%.]+)$') or 'ttf'
+					local szDstFile = szDstDir .. tFont.szName .. '.' .. szExt
+					CPath.Move(szSrcFile, szDstFile)
+				end
+			end
+		end
+	end
+end
+
 -- 初始化设置
 do
 	local bChanged = false
