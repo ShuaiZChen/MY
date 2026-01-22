@@ -1,3 +1,7 @@
+-- 由于版权和文件大小问题，字体文件不便直接打包在资源中
+-- 因此描述文件仅包含字体信息，用户需自行准备字体文件并放置在指定目录下
+-- 作者个人收藏喜好的字体可在 https://github.com/tinymins/JX3MYFont 获取
+-- 将准备好的字体文件放置在 ./Interface/MY_FontResource/font/ 目录下即可使用
 return {
 	{ tLang = { zhcn = true }, szName = "方正剪纸", szFile = "/ui/font/fzjz.ttf" },
 	{ tLang = { zhcn = true }, szName = "方正行楷", szFile = "/ui/Font/fzxk.ttf" },
