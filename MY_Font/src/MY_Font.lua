@@ -251,7 +251,7 @@ function PS.OnPanelActive(wnd)
 	}):AutoHeight():Height() + 2
 	nY = nY + ui:Append('Text', {
 		x = nX, y = nY, w = nW - nX * 2, multiline = true, alignVertical = 0,
-		text = _L['4. Place the prepared font files in the %s directory to use them.'],
+		text = _L['4. Place the prepared font files in the font directory to use them, click button below to open font folder.'],
 	}):AutoHeight():Height() + 2
 
 	nX = nPaddingX
