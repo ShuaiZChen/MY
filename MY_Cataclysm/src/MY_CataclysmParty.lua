@@ -2371,7 +2371,7 @@ function CTM:UpdateMemberGroupRide(hMember)
             end
 
             hGroup:Show()
-            hImgInvincible:Show(tTargetState.bPassenger)
+            hImgInvincible:Hide()
             hImgGroupDriver:Show(tTargetState.bDriver and bSameVehicle)
             hImgGroupOtherDriver:Show(tTargetState.bDriver and not bSameVehicle)
             hImgGroupPassenger:Show(tTargetState.bPassenger and bSameVehicle)
