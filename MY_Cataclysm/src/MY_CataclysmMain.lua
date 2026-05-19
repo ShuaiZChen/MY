@@ -37,6 +37,7 @@ local CTM_BUFF_OFFICIAL = {}
 local DEBUG = false
 local BUFF_GROUP_RIDE_DRIVER = 30098 --多人坐骑主驾Buff
 local BUFF_GROUP_RIDE_PASSENGER = 30099 --多人坐骑副驾Buff
+local BUFF_GROUP_BROADCAST = 33842 --转播团队语音Buff
 
 do
 -- TODO: 不是需要基础排序 而是需要作用域限定加权，当作用域一致时，用户>DBM>官方
@@ -692,6 +693,7 @@ function D.OnFrameCreate()
 	this:RegisterEvent('TARGET_CHANGE')
 	this:RegisterEvent('CHARACTER_THREAT_RANKLIST')
 	this:RegisterEvent('BUFF_UPDATE')
+	this:RegisterEvent('ON_DUNGEON_OB_STREAMER_LIST_UPDATE')
 	this:RegisterEvent('PLAYER_ENTER_SCENE')
 	this:RegisterEvent('MY_CATACLYSM_BUFF_LIST_CACHE_UPDATE')
 	this:RegisterEvent('MY_CATACLYSM_SET_VISIBLE')
@@ -906,6 +908,9 @@ function D.OnEvent(szEvent)
 	elseif szEvent == 'BUFF_UPDATE' then
 		-- local owner, bdelete, index, cancancel, id  , stacknum, endframe, binit, level, srcid, isvalid, leftframe
 		--     = arg0 , arg1   , arg2 , arg3     , arg4, arg5    , arg6    , arg7 , arg8 , arg9 , arg10  , arg11
+		if arg4 == BUFF_GROUP_BROADCAST then
+			MY_CataclysmParty:RefreshLiveByMemberID(arg0)
+		end
 		if arg4 == BUFF_GROUP_RIDE_DRIVER or arg4 == BUFF_GROUP_RIDE_PASSENGER then
 			local hPlayer = GetClientPlayer()
 			if hPlayer and arg0 == hPlayer.dwID then
@@ -921,6 +926,8 @@ function D.OnEvent(szEvent)
 			return
 		end
 		OnBuffUpdate(arg0, arg4, arg8, arg5, arg9)
+	elseif szEvent == 'ON_DUNGEON_OB_STREAMER_LIST_UPDATE' then
+		MY_CataclysmParty:RefreshLiveAll()
 	elseif szEvent == 'PLAYER_ENTER_SCENE' then
 		if X.ENVIRONMENT.RUNTIME_OPTIMIZE then
 			return
